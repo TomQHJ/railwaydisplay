@@ -25,7 +25,7 @@ const config = reactive({
       value: 75
     },
     {
-      name: '西峡',
+      name: '汕头',
       value: 66
     },
   ],

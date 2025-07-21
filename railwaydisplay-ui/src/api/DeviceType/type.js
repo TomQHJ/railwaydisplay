@@ -1,6 +1,15 @@
 import request from '@/utils/request'
 
 // 查询设备类型字段列表
+export function listAllType(query) {
+  return request({
+    url: '/DeviceType/type/listAll',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询设备类型字段列表
 export function listType(query) {
   return request({
     url: '/DeviceType/type/list',

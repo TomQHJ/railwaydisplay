@@ -1,6 +1,15 @@
 import request from '@/utils/request'
 
 // 查询车站设备维修处理状态列表
+export function listAllResult(query) {
+  return request({
+    url: '/deviceresult/result/listAll',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询车站设备维修处理状态列表
 export function listResult(query) {
   return request({
     url: '/deviceresult/result/list',

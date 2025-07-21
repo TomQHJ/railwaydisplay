@@ -264,7 +264,7 @@
 
 <script setup name="Device">
 import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/device/device"
-import { listType } from "@/api/DeviceType/type"
+import { listAllType } from "@/api/DeviceType/type"
 import { listStation } from "@/api/stationman/station"
 import { onMounted } from "vue"
 
@@ -311,7 +311,7 @@ onMounted(() => {
 
 const options = ref([])
 function getAllList(){
-  listType().then(response => {
+  listAllType().then(response => {
     options.value = response.rows
   })
 }

@@ -36,7 +36,7 @@ onMounted(() => {
     }
   },
   yAxis: {
-    name: '销售额',
+    name: '人数（万人）',
     data: 'value',
     /* (标题)改变字体颜色 fill ，改变字体大小 fontSize*/
     nameTextStyle:{

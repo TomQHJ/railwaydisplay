@@ -198,7 +198,7 @@
 
 <script setup name="Maintenance">
 import { listMaintenance, getMaintenance, delMaintenance, addMaintenance, updateMaintenance ,listAllMaintenance} from "@/api/maintenance/maintenance"
-import { listResult } from "@/api/deviceresult/result"
+import { listAllResult } from "@/api/deviceresult/result"
 import { onMounted } from "vue"
 const { proxy } = getCurrentInstance()
 
@@ -238,8 +238,8 @@ onMounted(() => {
 
 const options = ref([])
 function getAllList(){
-  listResult().then(response => {
-    options.value = response.rows
+  listAllResult().then(response => {
+    options.value = response.data
   })
 }
 

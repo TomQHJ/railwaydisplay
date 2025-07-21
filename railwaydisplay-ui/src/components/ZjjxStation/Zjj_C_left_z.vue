@@ -5,38 +5,21 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
-const config=reactive({
-    data: [
-    {
-      name: 'G1',
-      value: 1567,
-    },
-    {
-      name: 'G2',
-      value: 1352,
-    },
-    {
-      name: 'G3',
-      value: 867,
-    },
-    {
-      name: 'G4',
-      value: 666,
-    },
-    {
-      name: 'G5',
-      value: 780,
-    },
-    {
-      name: 'G6',
-      value: 845,
-    },
-    {
-      name: 'G7',
-      value: 829,
-    },
-  ],
+import { reactive, onMounted } from 'vue'
+import { listAll } from '@/api/peo/peo'
+
+const config = reactive({
+  data: [],
   unit: '人',
+})
+
+onMounted(async () => {
+  const railway = await listAll()
+  const railwaypeo = railway.data || []
+
+  config.data = railwaypeo.map(data => ({
+    name: data.trainNum,
+    value: Number(data.dTp || 0) + Number(data.tTp || 0)
+  }))
 })
 </script>
