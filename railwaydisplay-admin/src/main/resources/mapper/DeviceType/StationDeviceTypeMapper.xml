@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.DeviceType.mapper.StationDeviceTypeMapper">
+    
+    <resultMap type="StationDeviceType" id="StationDeviceTypeResult">
+        <result property="stationDeviceId"    column="station_device_id"    />
+        <result property="stationDeviceName"    column="station_device_name"    />
+    </resultMap>
+
+    <sql id="selectStationDeviceTypeVo">
+        select station_device_id, station_device_name from station_device_type
+    </sql>
+
+    <select id="selectStationDeviceTypeList" parameterType="StationDeviceType" resultMap="StationDeviceTypeResult">
+        <include refid="selectStationDeviceTypeVo"/>
+        <where>  
+            <if test="stationDeviceName != null  and stationDeviceName != ''"> and station_device_name like concat('%', #{stationDeviceName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectStationDeviceTypeByStationDeviceId" parameterType="Integer" resultMap="StationDeviceTypeResult">
+        <include refid="selectStationDeviceTypeVo"/>
+        where station_device_id = #{stationDeviceId}
+    </select>
+
+    <insert id="insertStationDeviceType" parameterType="StationDeviceType">
+        insert into station_device_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationDeviceId != null">station_device_id,</if>
+            <if test="stationDeviceName != null">station_device_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationDeviceId != null">#{stationDeviceId},</if>
+            <if test="stationDeviceName != null">#{stationDeviceName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationDeviceType" parameterType="StationDeviceType">
+        update station_device_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationDeviceName != null">station_device_name = #{stationDeviceName},</if>
+        </trim>
+        where station_device_id = #{stationDeviceId}
+    </update>
+
+    <delete id="deleteStationDeviceTypeByStationDeviceId" parameterType="Integer">
+        delete from station_device_type where station_device_id = #{stationDeviceId}
+    </delete>
+
+    <delete id="deleteStationDeviceTypeByStationDeviceIds" parameterType="String">
+        delete from station_device_type where station_device_id in 
+        <foreach item="stationDeviceId" collection="array" open="(" separator="," close=")">
+            #{stationDeviceId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.peo.mapper.StationTrainPeoMapper">
+    
+    <resultMap type="StationTrainPeo" id="StationTrainPeoResult">
+        <result property="id"    column="id"    />
+        <result property="trainNum"    column="train_num"    />
+        <result property="tTp"    column="t_tp"    />
+        <result property="dTp"    column="d_tp"    />
+        <result property="stationNum"    column="station_num"    />
+        <association property="station" javaType="Station">
+            <result property="stationName" column="station_name" />
+        </association>
+    </resultMap>
+
+    <sql id="selectStationTrainPeoVo">
+        select station_train_peo.* , station.station_name from station_train_peo LEFT JOIN station ON station_train_peo.station_num=station.station_num
+    </sql>
+
+    <select id="selectStationTrainPeoList" parameterType="StationTrainPeo" resultMap="StationTrainPeoResult">
+        <include refid="selectStationTrainPeoVo"/>
+        <where>  
+            <if test="trainNum != null  and trainNum != ''"> and train_num = #{trainNum}</if>
+            <if test="tTp != null "> and t_tp = #{tTp}</if>
+            <if test="dTp != null "> and d_tp = #{dTp}</if>
+            <if test="stationNum != null "> and station_train_peo.station_num = #{stationNum}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationTrainPeoById" parameterType="Integer" resultMap="StationTrainPeoResult">
+        <include refid="selectStationTrainPeoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertStationTrainPeo" parameterType="StationTrainPeo" useGeneratedKeys="true" keyProperty="id">
+        insert into station_train_peo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">train_num,</if>
+            <if test="tTp != null">t_tp,</if>
+            <if test="dTp != null">d_tp,</if>
+            <if test="stationNum != null">station_num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">#{trainNum},</if>
+            <if test="tTp != null">#{tTp},</if>
+            <if test="dTp != null">#{dTp},</if>
+            <if test="stationNum != null">#{stationNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationTrainPeo" parameterType="StationTrainPeo">
+        update station_train_peo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainNum != null">train_num = #{trainNum},</if>
+            <if test="tTp != null">t_tp = #{tTp},</if>
+            <if test="dTp != null">d_tp = #{dTp},</if>
+            <if test="stationNum != null">station_num = #{stationNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStationTrainPeoById" parameterType="Integer">
+        delete from station_train_peo where id = #{id}
+    </delete>
+
+    <delete id="deleteStationTrainPeoByIds" parameterType="String">
+        delete from station_train_peo where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

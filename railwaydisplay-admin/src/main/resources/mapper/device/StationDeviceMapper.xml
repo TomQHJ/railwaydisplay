@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.device.mapper.StationDeviceMapper">
+    
+    <resultMap type="StationDevice" id="StationDeviceResult">
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="brand"    column="brand"    />
+        <result property="model"    column="model"    />
+        <result property="stationNum"    column="station_num"    />
+        <result property="location"    column="location"    />
+        <result property="status"    column="status"    />
+        <result property="installDate"    column="install_date"    />
+        <result property="lastMaintenanceDate"    column="last_maintenance_date"    />
+        <result property="nextMaintenanceDate"    column="next_maintenance_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <association property="stationDeviceType" javaType="StationDeviceType">
+                <result property="stationDeviceName" column="station_device_name" />
+        </association>
+        <association property="station" javaType="Station">
+            <result property="stationName" column="station_name" />
+        </association>
+    </resultMap>
+
+    <sql id="selectStationDeviceVo">
+        SELECT station_device.* , station_device_type.station_device_name , station.station_name FROM station_device LEFT JOIN station_device_type ON station_device.device_type=station_device_type.station_device_id LEFT JOIN station ON station_device.station_num=station.station_num
+    </sql>
+
+    <select id="selectStationDeviceList" parameterType="StationDevice" resultMap="StationDeviceResult">
+        <include refid="selectStationDeviceVo"/>
+        <where>  
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="deviceType != null "> and device_type = #{deviceType}</if>
+            <if test="brand != null  and brand != ''"> and brand = #{brand}</if>
+            <if test="model != null  and model != ''"> and model = #{model}</if>
+            <if test="stationNum != null "> and station_device.station_num = #{stationNum}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="installDate != null "> and install_date = #{installDate}</if>
+            <if test="lastMaintenanceDate != null "> and last_maintenance_date = #{lastMaintenanceDate}</if>
+            <if test="nextMaintenanceDate != null "> and next_maintenance_date = #{nextMaintenanceDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationDeviceByDeviceId" parameterType="Integer" resultMap="StationDeviceResult">
+        <include refid="selectStationDeviceVo"/>
+        where device_id = #{deviceId}
+    </select>
+
+    <insert id="insertStationDevice" parameterType="StationDevice">
+        insert into station_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceType != null">device_type,</if>
+            <if test="brand != null">brand,</if>
+            <if test="model != null">model,</if>
+            <if test="stationNum != null">station_num,</if>
+            <if test="location != null">location,</if>
+            <if test="status != null">status,</if>
+            <if test="installDate != null">install_date,</if>
+            <if test="lastMaintenanceDate != null">last_maintenance_date,</if>
+            <if test="nextMaintenanceDate != null">next_maintenance_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="brand != null">#{brand},</if>
+            <if test="model != null">#{model},</if>
+            <if test="stationNum != null">#{stationNum},</if>
+            <if test="location != null">#{location},</if>
+            <if test="status != null">#{status},</if>
+            <if test="installDate != null">#{installDate},</if>
+            <if test="lastMaintenanceDate != null">#{lastMaintenanceDate},</if>
+            <if test="nextMaintenanceDate != null">#{nextMaintenanceDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationDevice" parameterType="StationDevice">
+        update station_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceType != null">device_type = #{deviceType},</if>
+            <if test="brand != null">brand = #{brand},</if>
+            <if test="model != null">model = #{model},</if>
+            <if test="stationNum != null">station_num = #{stationNum},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="installDate != null">install_date = #{installDate},</if>
+            <if test="lastMaintenanceDate != null">last_maintenance_date = #{lastMaintenanceDate},</if>
+            <if test="nextMaintenanceDate != null">next_maintenance_date = #{nextMaintenanceDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where device_id = #{deviceId}
+    </update>
+
+    <delete id="deleteStationDeviceByDeviceId" parameterType="Integer">
+        delete from station_device where device_id = #{deviceId}
+    </delete>
+
+    <delete id="deleteStationDeviceByDeviceIds" parameterType="String">
+        delete from station_device where device_id in 
+        <foreach item="deviceId" collection="array" open="(" separator="," close=")">
+            #{deviceId}
+        </foreach>
+    </delete>
+</mapper>

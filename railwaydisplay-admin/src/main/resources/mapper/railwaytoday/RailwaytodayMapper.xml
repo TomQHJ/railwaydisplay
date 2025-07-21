@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.railwaytoday.mapper.RailwaytodayMapper">
+    
+    <resultMap type="Railwaytoday" id="RailwaytodayResult">
+        <result property="id"    column="id"    />
+        <result property="trainNum"    column="train_num"    />
+        <result property="depStation"    column="dep_station"    />
+        <result property="terStation"    column="ter_station"    />
+        <result property="stopTickTime"    column="stop_tick_time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="plat"    column="plat"    />
+        <result property="ticketNum"    column="ticket_num"    />
+        <result property="state"    column="state"    />
+        <association property="stateTicket" javaType="RailwayStateTicket">
+            <result property="railwayState" column="railway_state" />
+        </association>
+    </resultMap>
+
+    <sql id="selectRailwaytodayVo">
+        SELECT railwaytoday.* ,railway_state_ticket.railway_state FROM `railwaytoday` LEFT JOIN railway_state_ticket ON railwaytoday.state=railway_state_ticket.railway_state_num
+    </sql>
+
+    <select id="selectRailwaytodayList" parameterType="Railwaytoday" resultMap="RailwaytodayResult">
+        <include refid="selectRailwaytodayVo"/>
+        <where>  
+            <if test="trainNum != null  and trainNum != ''"> and train_num = #{trainNum}</if>
+            <if test="depStation != null  and depStation != ''"> and dep_station = #{depStation}</if>
+            <if test="terStation != null  and terStation != ''"> and ter_station = #{terStation}</if>
+            <if test="stopTickTime != null "> and stop_tick_time = #{stopTickTime}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="plat != null "> and plat = #{plat}</if>
+            <if test="ticketNum != null "> and ticket_num = #{ticketNum}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    
+    <select id="selectRailwaytodayById" parameterType="Integer" resultMap="RailwaytodayResult">
+        <include refid="selectRailwaytodayVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRailwaytoday" parameterType="Railwaytoday" useGeneratedKeys="true" keyProperty="id">
+        insert into railwaytoday
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">train_num,</if>
+            <if test="depStation != null">dep_station,</if>
+            <if test="terStation != null">ter_station,</if>
+            <if test="stopTickTime != null">stop_tick_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="plat != null">plat,</if>
+            <if test="ticketNum != null">ticket_num,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">#{trainNum},</if>
+            <if test="depStation != null">#{depStation},</if>
+            <if test="terStation != null">#{terStation},</if>
+            <if test="stopTickTime != null">#{stopTickTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="plat != null">#{plat},</if>
+            <if test="ticketNum != null">#{ticketNum},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRailwaytoday" parameterType="Railwaytoday">
+        update railwaytoday
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainNum != null">train_num = #{trainNum},</if>
+            <if test="depStation != null">dep_station = #{depStation},</if>
+            <if test="terStation != null">ter_station = #{terStation},</if>
+            <if test="stopTickTime != null">stop_tick_time = #{stopTickTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="plat != null">plat = #{plat},</if>
+            <if test="ticketNum != null">ticket_num = #{ticketNum},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRailwaytodayById" parameterType="Integer">
+        delete from railwaytoday where id = #{id}
+    </delete>
+
+    <delete id="deleteRailwaytodayByIds" parameterType="String">
+        delete from railwaytoday where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

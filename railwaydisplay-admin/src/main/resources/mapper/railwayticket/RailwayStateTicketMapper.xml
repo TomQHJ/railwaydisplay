@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.railwayticket.mapper.RailwayStateTicketMapper">
+    
+    <resultMap type="RailwayStateTicket" id="RailwayStateTicketResult">
+        <result property="railwayStateNum"    column="railway_state_num"    />
+        <result property="railwayState"    column="railway_state"    />
+    </resultMap>
+
+    <sql id="selectRailwayStateTicketVo">
+        select railway_state_num, railway_state from railway_state_ticket
+    </sql>
+
+    <select id="selectRailwayStateTicketList" parameterType="RailwayStateTicket" resultMap="RailwayStateTicketResult">
+        <include refid="selectRailwayStateTicketVo"/>
+        <where>  
+            <if test="railwayState != null  and railwayState != ''"> and railway_state = #{railwayState}</if>
+        </where>
+    </select>
+    
+    <select id="selectRailwayStateTicketByRailwayStateNum" parameterType="Integer" resultMap="RailwayStateTicketResult">
+        <include refid="selectRailwayStateTicketVo"/>
+        where railway_state_num = #{railwayStateNum}
+    </select>
+
+    <insert id="insertRailwayStateTicket" parameterType="RailwayStateTicket">
+        insert into railway_state_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="railwayStateNum != null">railway_state_num,</if>
+            <if test="railwayState != null">railway_state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="railwayStateNum != null">#{railwayStateNum},</if>
+            <if test="railwayState != null">#{railwayState},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRailwayStateTicket" parameterType="RailwayStateTicket">
+        update railway_state_ticket
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="railwayState != null">railway_state = #{railwayState},</if>
+        </trim>
+        where railway_state_num = #{railwayStateNum}
+    </update>
+
+    <delete id="deleteRailwayStateTicketByRailwayStateNum" parameterType="Integer">
+        delete from railway_state_ticket where railway_state_num = #{railwayStateNum}
+    </delete>
+
+    <delete id="deleteRailwayStateTicketByRailwayStateNums" parameterType="String">
+        delete from railway_state_ticket where railway_state_num in 
+        <foreach item="railwayStateNum" collection="array" open="(" separator="," close=")">
+            #{railwayStateNum}
+        </foreach>
+    </delete>
+</mapper>

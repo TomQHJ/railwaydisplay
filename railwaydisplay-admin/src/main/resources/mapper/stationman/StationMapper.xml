@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.stationman.mapper.StationMapper">
+    
+    <resultMap type="Station" id="StationResult">
+        <result property="stationNum"    column="station_num"    />
+        <result property="stationName"    column="station_name"    />
+        <result property="sName"    column="s_name"    />
+        <result property="stationGardeNum"    column="station_garde_num"    />
+        <association property="stationGarde" javaType="StationGarde">
+            <result property="stationGarde" column="station_garde"/>
+        </association>
+    </resultMap>
+
+    <sql id="selectStationVo">
+        SELECT station.* , station_garde FROM `station` LEFT JOIN station_garde ON station.station_garde_num=station_garde.station_garde_num
+    </sql>
+
+    <select id="selectStationList" parameterType="Station" resultMap="StationResult">
+        <include refid="selectStationVo"/>
+        <where>  
+            <if test="stationName != null  and stationName != ''"> and station_name like concat('%', #{stationName}, '%')</if>
+            <if test="sName != null  and sName != ''"> and s_name like concat('%', #{sName}, '%')</if>
+            <if test="stationGardeNum != null "> and station.station_garde_num = #{stationGardeNum}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationByStationNum" parameterType="Integer" resultMap="StationResult">
+        <include refid="selectStationVo"/>
+        where station_num = #{stationNum}
+    </select>
+
+    <insert id="insertStation" parameterType="Station" useGeneratedKeys="true" keyProperty="stationNum">
+        insert into station
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationName != null">station_name,</if>
+            <if test="sName != null">s_name,</if>
+            <if test="stationGardeNum != null">station_garde_num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationName != null">#{stationName},</if>
+            <if test="sName != null">#{sName},</if>
+            <if test="stationGardeNum != null">#{stationGardeNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStation" parameterType="Station">
+        update station
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationName != null">station_name = #{stationName},</if>
+            <if test="sName != null">s_name = #{sName},</if>
+            <if test="stationGardeNum != null">station_garde_num = #{stationGardeNum},</if>
+        </trim>
+        where station_num = #{stationNum}
+    </update>
+
+    <delete id="deleteStationByStationNum" parameterType="Integer">
+        delete from station where station_num = #{stationNum}
+    </delete>
+
+    <delete id="deleteStationByStationNums" parameterType="String">
+        delete from station where station_num in 
+        <foreach item="stationNum" collection="array" open="(" separator="," close=")">
+            #{stationNum}
+        </foreach>
+    </delete>
+</mapper>

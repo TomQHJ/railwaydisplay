@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.deviceresult.mapper.StationDeviceResultMapper">
+    
+    <resultMap type="StationDeviceResult" id="StationDeviceResultResult">
+        <result property="stationDeviceResultId"    column="station_device_result_id"    />
+        <result property="stationDeviceResult"    column="station_device_result"    />
+    </resultMap>
+
+    <sql id="selectStationDeviceResultVo">
+        select station_device_result_id, station_device_result from station_device_result
+    </sql>
+
+    <select id="selectStationDeviceResultList" parameterType="StationDeviceResult" resultMap="StationDeviceResultResult">
+        <include refid="selectStationDeviceResultVo"/>
+        <where>  
+            <if test="stationDeviceResult != null  and stationDeviceResult != ''"> and station_device_result = #{stationDeviceResult}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationDeviceResultByStationDeviceResultId" parameterType="Integer" resultMap="StationDeviceResultResult">
+        <include refid="selectStationDeviceResultVo"/>
+        where station_device_result_id = #{stationDeviceResultId}
+    </select>
+
+    <insert id="insertStationDeviceResult" parameterType="StationDeviceResult">
+        insert into station_device_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationDeviceResultId != null">station_device_result_id,</if>
+            <if test="stationDeviceResult != null">station_device_result,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationDeviceResultId != null">#{stationDeviceResultId},</if>
+            <if test="stationDeviceResult != null">#{stationDeviceResult},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationDeviceResult" parameterType="StationDeviceResult">
+        update station_device_result
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationDeviceResult != null">station_device_result = #{stationDeviceResult},</if>
+        </trim>
+        where station_device_result_id = #{stationDeviceResultId}
+    </update>
+
+    <delete id="deleteStationDeviceResultByStationDeviceResultId" parameterType="Integer">
+        delete from station_device_result where station_device_result_id = #{stationDeviceResultId}
+    </delete>
+
+    <delete id="deleteStationDeviceResultByStationDeviceResultIds" parameterType="String">
+        delete from station_device_result where station_device_result_id in 
+        <foreach item="stationDeviceResultId" collection="array" open="(" separator="," close=")">
+            #{stationDeviceResultId}
+        </foreach>
+    </delete>
+</mapper>

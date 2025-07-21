@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.railwayplatmsg.mapper.RailwaymsgMapper">
+    
+    <resultMap type="Railwaymsg" id="RailwaymsgResult">
+        <result property="id"    column="id"    />
+        <result property="trainNum"    column="train_num"    />
+        <result property="depStation"    column="dep_station"    />
+        <result property="terStation"    column="ter_station"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="plat"    column="plat"    />
+        <result property="state"    column="state"    />
+        <association property="stateTicket" javaType="RailwayStateTicket">
+                <result property="railwayState" column="railway_state" />
+        </association>
+    </resultMap>
+
+    <sql id="selectRailwaymsgVo">
+        SELECT railwaymsg.* , railway_state_ticket.railway_state FROM `railwaymsg` LEFT JOIN railway_state_ticket ON railwaymsg.state = railway_state_ticket.railway_state_num
+    </sql>
+
+    <select id="selectRailwaymsgList" parameterType="Railwaymsg" resultMap="RailwaymsgResult">
+        <include refid="selectRailwaymsgVo"/>
+        <where>  
+            <if test="trainNum != null  and trainNum != ''"> and train_num = #{trainNum}</if>
+            <if test="depStation != null  and depStation != ''"> and dep_station = #{depStation}</if>
+            <if test="terStation != null  and terStation != ''"> and ter_station = #{terStation}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="plat != null "> and plat = #{plat}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    
+    <select id="selectRailwaymsgById" parameterType="Long" resultMap="RailwaymsgResult">
+        <include refid="selectRailwaymsgVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRailwaymsg" parameterType="Railwaymsg" useGeneratedKeys="true" keyProperty="id">
+        insert into railwaymsg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">train_num,</if>
+            <if test="depStation != null">dep_station,</if>
+            <if test="terStation != null">ter_station,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="plat != null">plat,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">#{trainNum},</if>
+            <if test="depStation != null">#{depStation},</if>
+            <if test="terStation != null">#{terStation},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="plat != null">#{plat},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRailwaymsg" parameterType="Railwaymsg">
+        update railwaymsg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainNum != null">train_num = #{trainNum},</if>
+            <if test="depStation != null">dep_station = #{depStation},</if>
+            <if test="terStation != null">ter_station = #{terStation},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="plat != null">plat = #{plat},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRailwaymsgById" parameterType="Long">
+        delete from railwaymsg where id = #{id}
+    </delete>
+
+    <delete id="deleteRailwaymsgByIds" parameterType="String">
+        delete from railwaymsg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

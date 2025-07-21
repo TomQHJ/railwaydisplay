@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.rplatmsg.mapper.RailwayPlatMsgMapper">
+    
+    <resultMap type="RailwayPlatMsg" id="RailwayPlatMsgResult">
+        <result property="platNum"    column="plat_num"    />
+        <result property="trainNum"    column="train_num"    />
+        <result property="depStation"    column="dep_station"    />
+        <result property="terStation"    column="ter_station"    />
+        <result property="startTime"    column="start_time"    />
+    </resultMap>
+
+    <sql id="selectRailwayPlatMsgVo">
+        select plat_num, train_num, dep_station, ter_station, start_time from railway_plat_msg
+    </sql>
+
+    <select id="selectRailwayPlatMsgList" parameterType="RailwayPlatMsg" resultMap="RailwayPlatMsgResult">
+        <include refid="selectRailwayPlatMsgVo"/>
+        <where>  
+            <if test="trainNum != null  and trainNum != ''"> and train_num = #{trainNum}</if>
+            <if test="depStation != null  and depStation != ''"> and dep_station = #{depStation}</if>
+            <if test="terStation != null  and terStation != ''"> and ter_station = #{terStation}</if>
+            <if test="startTime != null and startTime != '' "> and start_time = #{startTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectRailwayPlatMsgByPlatNum" parameterType="Long" resultMap="RailwayPlatMsgResult">
+        <include refid="selectRailwayPlatMsgVo"/>
+        where plat_num = #{platNum}
+    </select>
+
+    <insert id="insertRailwayPlatMsg" parameterType="RailwayPlatMsg" useGeneratedKeys="true" keyProperty="platNum">
+        insert into railway_plat_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">train_num,</if>
+            <if test="depStation != null">dep_station,</if>
+            <if test="terStation != null">ter_station,</if>
+            <if test="startTime != null">start_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">#{trainNum},</if>
+            <if test="depStation != null">#{depStation},</if>
+            <if test="terStation != null">#{terStation},</if>
+            <if test="startTime != null">#{startTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRailwayPlatMsg" parameterType="RailwayPlatMsg">
+        update railway_plat_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainNum != null">train_num = #{trainNum},</if>
+            <if test="depStation != null">dep_station = #{depStation},</if>
+            <if test="terStation != null">ter_station = #{terStation},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+        </trim>
+        where plat_num = #{platNum}
+    </update>
+
+    <delete id="deleteRailwayPlatMsgByPlatNum" parameterType="Long">
+        delete from railway_plat_msg where plat_num = #{platNum}
+    </delete>
+
+    <delete id="deleteRailwayPlatMsgByPlatNums" parameterType="String">
+        delete from railway_plat_msg where plat_num in 
+        <foreach item="platNum" collection="array" open="(" separator="," close=")">
+            #{platNum}
+        </foreach>
+    </delete>
+</mapper>

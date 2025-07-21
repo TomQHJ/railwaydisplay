@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.railway.mapper.RailwaymapMapper">
+    
+    <resultMap type="Railwaymap" id="RailwaymapResult">
+        <result property="id"    column="id"    />
+        <result property="trainNum"    column="train_num"    />
+        <result property="depStation"    column="dep_station"    />
+        <result property="depTime"    column="dep_time"    />
+        <result property="wayStation01"    column="way_station_01"    />
+        <result property="wayDepTime01"    column="way_dep_time_01"    />
+        <result property="wayStation02"    column="way_station_02"    />
+        <result property="wayDepTime02"    column="way_dep_time_02"    />
+        <result property="wayStation03"    column="way_station_03"    />
+        <result property="wayDepTime03"    column="way_dep_time_03"    />
+        <result property="terStation"    column="ter_station"    />
+        <result property="terTime"    column="ter_time"    />
+    </resultMap>
+
+    <sql id="selectRailwaymapVo">
+        select id, train_num, dep_station, dep_time, way_station_01, way_dep_time_01, way_station_02, way_dep_time_02, way_station_03, way_dep_time_03, ter_station, ter_time from railwaymap
+    </sql>
+
+    <select id="selectRailwaymapList" parameterType="Railwaymap" resultMap="RailwaymapResult">
+        <include refid="selectRailwaymapVo"/>
+        <where>  
+            <if test="trainNum != null  and trainNum != ''"> and train_num = #{trainNum}</if>
+            <if test="depStation != null  and depStation != ''"> and dep_station = #{depStation}</if>
+            <if test="depTime != null "> and dep_time = #{depTime}</if>
+            <if test="wayStation01 != null  and wayStation01 != ''"> and way_station_01 = #{wayStation01}</if>
+            <if test="wayDepTime01 != null "> and way_dep_time_01 = #{wayDepTime01}</if>
+            <if test="wayStation02 != null  and wayStation02 != ''"> and way_station_02 = #{wayStation02}</if>
+            <if test="wayDepTime02 != null "> and way_dep_time_02 = #{wayDepTime02}</if>
+            <if test="wayStation03 != null  and wayStation03 != ''"> and way_station_03 = #{wayStation03}</if>
+            <if test="wayDepTime03 != null "> and way_dep_time_03 = #{wayDepTime03}</if>
+            <if test="terStation != null  and terStation != ''"> and ter_station = #{terStation}</if>
+            <if test="terTime != null "> and ter_time = #{terTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectRailwaymapById" parameterType="Integer" resultMap="RailwaymapResult">
+        <include refid="selectRailwaymapVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectRailwaymapByTrainNum" parameterType="String" resultMap="RailwaymapResult">
+        <include refid="selectRailwaymapVo"/>
+        where train_num = #{trainNum}
+    </select>
+
+    <insert id="insertRailwaymap" parameterType="Railwaymap" useGeneratedKeys="true" keyProperty="id">
+        insert into railwaymap
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">train_num,</if>
+            <if test="depStation != null">dep_station,</if>
+            <if test="depTime != null">dep_time,</if>
+            <if test="wayStation01 != null">way_station_01,</if>
+            <if test="wayDepTime01 != null">way_dep_time_01,</if>
+            <if test="wayStation02 != null">way_station_02,</if>
+            <if test="wayDepTime02 != null">way_dep_time_02,</if>
+            <if test="wayStation03 != null">way_station_03,</if>
+            <if test="wayDepTime03 != null">way_dep_time_03,</if>
+            <if test="terStation != null">ter_station,</if>
+            <if test="terTime != null">ter_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainNum != null">#{trainNum},</if>
+            <if test="depStation != null">#{depStation},</if>
+            <if test="depTime != null">#{depTime},</if>
+            <if test="wayStation01 != null">#{wayStation01},</if>
+            <if test="wayDepTime01 != null">#{wayDepTime01},</if>
+            <if test="wayStation02 != null">#{wayStation02},</if>
+            <if test="wayDepTime02 != null">#{wayDepTime02},</if>
+            <if test="wayStation03 != null">#{wayStation03},</if>
+            <if test="wayDepTime03 != null">#{wayDepTime03},</if>
+            <if test="terStation != null">#{terStation},</if>
+            <if test="terTime != null">#{terTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRailwaymap" parameterType="Railwaymap">
+        update railwaymap
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainNum != null">train_num = #{trainNum},</if>
+            <if test="depStation != null">dep_station = #{depStation},</if>
+            <if test="depTime != null">dep_time = #{depTime},</if>
+            <if test="wayStation01 != null">way_station_01 = #{wayStation01},</if>
+            <if test="wayDepTime01 != null">way_dep_time_01 = #{wayDepTime01},</if>
+            <if test="wayStation02 != null">way_station_02 = #{wayStation02},</if>
+            <if test="wayDepTime02 != null">way_dep_time_02 = #{wayDepTime02},</if>
+            <if test="wayStation03 != null">way_station_03 = #{wayStation03},</if>
+            <if test="wayDepTime03 != null">way_dep_time_03 = #{wayDepTime03},</if>
+            <if test="terStation != null">ter_station = #{terStation},</if>
+            <if test="terTime != null">ter_time = #{terTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRailwaymapById" parameterType="Integer">
+        delete from railwaymap where id = #{id}
+    </delete>
+
+    <delete id="deleteRailwaymapByIds" parameterType="String">
+        delete from railwaymap where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.stationmsg.mapper.StationMsgMapper">
+    
+    <resultMap type="StationMsg" id="StationMsgResult">
+        <result property="id"    column="id"    />
+        <result property="stationNum"    column="station_num"    />
+        <result property="sendPeop"    column="send_peop"    />
+        <result property="arrivePeop"    column="arrive_peop"    />
+        <association property="station" javaType="station">
+            <result property="stationName" column="station_name" />
+        </association>
+    </resultMap>
+
+<!--    <sql id="selectStationMsgVo">-->
+<!--        select id, station_num, send_peop, arrive_peop from station_msg-->
+<!--    </sql>-->
+    <sql id="selectStationMsgVo">
+        select station_msg.id ,station_msg.station_num,station.station_name,station_msg.send_peop , station_msg.arrive_peop from station_msg LEFT JOIN station ON
+            station_msg.station_num =station.station_num
+    </sql>
+
+
+    <select id="selectStationMsgList" parameterType="StationMsg" resultMap="StationMsgResult">
+        <include refid="selectStationMsgVo"/>
+        <where>  
+            <if test="stationNum != null "> and station_msg.station_num = #{stationNum}</if>
+            <if test="sendPeop != null "> and send_peop = #{sendPeop}</if>
+            <if test="arrivePeop != null "> and arrive_peop = #{arrivePeop}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationMsgById" parameterType="Integer" resultMap="StationMsgResult">
+        <include refid="selectStationMsgVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertStationMsg" parameterType="StationMsg" useGeneratedKeys="true" keyProperty="id">
+        insert into station_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationNum != null">station_msg.station_num,</if>
+            <if test="sendPeop != null">send_peop,</if>
+            <if test="arrivePeop != null">arrive_peop,</if>
+
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationNum != null">#{stationNum},</if>
+            <if test="sendPeop != null">#{sendPeop},</if>
+            <if test="arrivePeop != null">#{arrivePeop},</if>
+
+         </trim>
+    </insert>
+
+    <update id="updateStationMsg" parameterType="StationMsg">
+        update station_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationNum != null">station_msg.station_num = #{stationNum},</if>
+            <if test="sendPeop != null">send_peop = #{sendPeop},</if>
+            <if test="arrivePeop != null">arrive_peop = #{arrivePeop},</if>
+
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStationMsgById" parameterType="Integer">
+        delete from station_msg where id = #{id}
+    </delete>
+
+    <delete id="deleteStationMsgByIds" parameterType="String">
+        delete from station_msg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

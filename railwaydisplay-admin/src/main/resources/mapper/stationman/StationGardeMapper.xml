@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.stationman.mapper.StationGardeMapper">
+    
+    <resultMap type="StationGarde" id="StationGardeResult">
+        <result property="stationGardeNum"    column="station_garde_num"    />
+        <result property="stationGarde"    column="station_garde"    />
+    </resultMap>
+
+    <sql id="selectStationGardeVo">
+        select station_garde_num, station_garde from station_garde
+    </sql>
+
+    <select id="selectStationGardeList" parameterType="StationGarde" resultMap="StationGardeResult">
+        <include refid="selectStationGardeVo"/>
+        <where>  
+            <if test="stationGarde != null  and stationGarde != ''"> and station_garde = #{stationGarde}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationGardeByStationGardeNum" parameterType="Long" resultMap="StationGardeResult">
+        <include refid="selectStationGardeVo"/>
+        where station_garde_num = #{stationGardeNum}
+    </select>
+
+    <insert id="insertStationGarde" parameterType="StationGarde">
+        insert into station_garde
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationGardeNum != null">station_garde_num,</if>
+            <if test="stationGarde != null">station_garde,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationGardeNum != null">#{stationGardeNum},</if>
+            <if test="stationGarde != null">#{stationGarde},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationGarde" parameterType="StationGarde">
+        update station_garde
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationGarde != null">station_garde = #{stationGarde},</if>
+        </trim>
+        where station_garde_num = #{stationGardeNum}
+    </update>
+
+    <delete id="deleteStationGardeByStationGardeNum" parameterType="Long">
+        delete from station_garde where station_garde_num = #{stationGardeNum}
+    </delete>
+
+    <delete id="deleteStationGardeByStationGardeNums" parameterType="String">
+        delete from station_garde where station_garde_num in 
+        <foreach item="stationGardeNum" collection="array" open="(" separator="," close=")">
+            #{stationGardeNum}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rdisplay.maintenance.mapper.StationDeviceMaintenanceMapper">
+    
+    <resultMap type="StationDeviceMaintenance" id="StationDeviceMaintenanceResult">
+        <result property="logId"    column="log_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="maintenanceDate"    column="maintenance_date"    />
+        <result property="maintenanceType"    column="maintenance_type"    />
+        <result property="operator"    column="operator"    />
+        <result property="description"    column="description"    />
+        <result property="result"    column="result"    />
+        <result property="attachment"    column="attachment"    />
+        <association property="stationDeviceResult" javaType="StationDeviceResult">
+            <result property="stationDeviceResult" column="station_device_result" />
+        </association>
+    </resultMap>
+
+    <sql id="selectStationDeviceMaintenanceVo">
+        SELECT station_device_maintenance.* , station_device_result.station_device_result FROM station_device_maintenance LEFT JOIN station_device_result ON station_device_maintenance.result = station_device_result.station_device_result_id
+    </sql>
+
+    <select id="selectStationDeviceMaintenanceList" parameterType="StationDeviceMaintenance" resultMap="StationDeviceMaintenanceResult">
+        <include refid="selectStationDeviceMaintenanceVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="maintenanceDate != null "> and maintenance_date = #{maintenanceDate}</if>
+            <if test="maintenanceType != null  and maintenanceType != ''"> and maintenance_type = #{maintenanceType}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="result != null "> and result = #{result}</if>
+            <if test="attachment != null  and attachment != ''"> and attachment = #{attachment}</if>
+        </where>
+    </select>
+    
+    <select id="selectStationDeviceMaintenanceByLogId" parameterType="Integer" resultMap="StationDeviceMaintenanceResult">
+        <include refid="selectStationDeviceMaintenanceVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertStationDeviceMaintenance" parameterType="StationDeviceMaintenance">
+        insert into station_device_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logId != null">log_id,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="maintenanceDate != null">maintenance_date,</if>
+            <if test="maintenanceType != null">maintenance_type,</if>
+            <if test="operator != null">operator,</if>
+            <if test="description != null">description,</if>
+            <if test="result != null">result,</if>
+            <if test="attachment != null">attachment,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logId != null">#{logId},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="maintenanceDate != null">#{maintenanceDate},</if>
+            <if test="maintenanceType != null">#{maintenanceType},</if>
+            <if test="operator != null">#{operator},</if>
+            <if test="description != null">#{description},</if>
+            <if test="result != null">#{result},</if>
+            <if test="attachment != null">#{attachment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationDeviceMaintenance" parameterType="StationDeviceMaintenance">
+        update station_device_maintenance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="maintenanceDate != null">maintenance_date = #{maintenanceDate},</if>
+            <if test="maintenanceType != null">maintenance_type = #{maintenanceType},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="attachment != null">attachment = #{attachment},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteStationDeviceMaintenanceByLogId" parameterType="Integer">
+        delete from station_device_maintenance where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteStationDeviceMaintenanceByLogIds" parameterType="String">
+        delete from station_device_maintenance where log_id in 
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+</mapper>
