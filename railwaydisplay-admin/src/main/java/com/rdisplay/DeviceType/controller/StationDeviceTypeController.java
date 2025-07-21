@@ -34,6 +34,12 @@ public class StationDeviceTypeController extends BaseController
     @Autowired
     private IStationDeviceTypeService stationDeviceTypeService;
 
+    @GetMapping("/listAll")
+    public AjaxResult listAll(){
+        List<StationDeviceType> listAll = stationDeviceTypeService.selectStationDeviceTypeList(null);
+        return AjaxResult.success(listAll);
+    }
+
     /**
      * 查询设备类型字段列表
      */

@@ -1,7 +1,7 @@
 # 项目相关配置
 ruoyi:
   # 文件路径
-  profile: F:/新建文件夹/20250630144353/RailwayDisplay/railwaydisplay-ui/src/assets/uploadPath
+  profile: railwaydisplay-ui/src/assets/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证

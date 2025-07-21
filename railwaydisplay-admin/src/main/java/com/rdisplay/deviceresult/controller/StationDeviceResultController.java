@@ -34,6 +34,14 @@ public class StationDeviceResultController extends BaseController
     @Autowired
     private IStationDeviceResultService stationDeviceResultService;
 
+    @GetMapping("/listAll")
+    public AjaxResult listAll()
+    {
+        List<StationDeviceResult> listAll = stationDeviceResultService.selectStationDeviceResultList(null);
+        return AjaxResult.success(listAll);
+    }
+
+
     /**
      * 查询车站设备维修处理状态列表
      */
